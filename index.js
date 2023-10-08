@@ -54,6 +54,17 @@ app.put("/products/:id", (req, res) => {
   res.json(product);
 });
 
+// Delete an existing product
+app.delete("/products/:id", (req, res) => {
+  const product = products.find((p) => p.id === parseInt(req.params.id));
+  if (!product) return res.status(404).send("Product not found");
+
+  const index = products.indexOf(product);
+  products.splice(index, 1);
+
+  res.json(product);
+});
+
 app.listen(port, () => {
   console.log(`Server running at <http://localhost>:${port}/`);
 });
