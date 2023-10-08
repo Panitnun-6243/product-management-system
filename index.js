@@ -41,6 +41,19 @@ app.post("/products", (req, res) => {
   res.json(product);
 });
 
+// Put an existing product
+app.put("/products/:id", (req, res) => {
+  const product = products.find((p) => p.id === parseInt(req.params.id));
+  if (!product) return res.status(404).send("Product not found");
+
+  product.name = req.body.name;
+  product.category = req.body.category;
+  product.price = req.body.price;
+  product.stock = req.body.stock;
+
+  res.json(product);
+});
+
 app.listen(port, () => {
   console.log(`Server running at <http://localhost>:${port}/`);
 });
