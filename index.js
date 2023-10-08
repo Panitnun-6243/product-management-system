@@ -28,6 +28,19 @@ app.get("/products/:id", (req, res) => {
   res.json(product);
 });
 
+//Post a new product
+app.post("/products", (req, res) => {
+  const product = {
+    id: products.length + 1,
+    name: req.body.name,
+    category: req.body.category,
+    price: req.body.price,
+    stock: req.body.stock,
+  };
+  products.push(product);
+  res.json(product);
+});
+
 app.listen(port, () => {
   console.log(`Server running at <http://localhost>:${port}/`);
 });
