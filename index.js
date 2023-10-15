@@ -46,9 +46,12 @@ app.get("/products", (req, res) => {
 
 // GET a single product by ID
 app.get("/products/:id", (req, res) => {
-  const product = products.find((p) => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).send("Product not found");
-  res.json(product);
+  Product.findById(req.params.id, (err, product) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    return res.json(product);
+  });
 });
 
 //Post a new product
