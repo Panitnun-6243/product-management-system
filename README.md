@@ -1,2 +1,3 @@
 # product-management-system
-Dev Init - week2 assignment
+
+Dev Init - week2,3 assignment
