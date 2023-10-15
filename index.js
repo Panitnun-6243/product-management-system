@@ -1,6 +1,24 @@
+const e = require("express");
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
+
+// connect MongoDB
+mongoose.connect("mongodb://localhost:27017/productDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// create Schema and Model
+const productSchema = new mongoose.Schema({
+  name: String,
+  category: String,
+  price: Number,
+  stock: Number,
+});
+
+const Product = mongoose.model("Product", productSchema);
 
 // middleware for logging
 app.use((req, res, next) => {
@@ -18,7 +36,12 @@ const products = [
 
 // GET all products
 app.get("/products", (req, res) => {
-  res.json(products);
+  Product.find((err, products) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    return res.json(products);
+  });
 });
 
 // GET a single product by ID
@@ -30,15 +53,13 @@ app.get("/products/:id", (req, res) => {
 
 //Post a new product
 app.post("/products", (req, res) => {
-  const product = {
-    id: products.length + 1,
-    name: req.body.name,
-    category: req.body.category,
-    price: req.body.price,
-    stock: req.body.stock,
-  };
-  products.push(product);
-  res.json(product);
+  const newProduct = new Product(req.body);
+  newProduct.save((err) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    return res.status(201).json({ success: "Create product successfully" });
+  });
 });
 
 // Put an existing product
