@@ -67,26 +67,27 @@ app.post("/products", (req, res) => {
 
 // Put an existing product
 app.put("/products/:id", (req, res) => {
-  const product = products.find((p) => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).send("Product not found");
-
-  product.name = req.body.name;
-  product.category = req.body.category;
-  product.price = req.body.price;
-  product.stock = req.body.stock;
-
-  res.json(product);
+  Product.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true },
+    (err, product) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+      return res.json(product);
+    }
+  );
 });
 
 // Delete an existing product
 app.delete("/products/:id", (req, res) => {
-  const product = products.find((p) => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).send("Product not found");
-
-  const index = products.indexOf(product);
-  products.splice(index, 1);
-
-  res.json(product);
+  Product.findByIdAndDelete(req.params.id, (err, product) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    return res.json({ success: "Delete product successfully" });
+  });
 });
 
 app.listen(port, () => {
